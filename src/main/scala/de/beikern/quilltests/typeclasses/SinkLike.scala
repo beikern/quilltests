@@ -19,12 +19,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.beikern
+package de.beikern.quilltests.typeclasses
 
-package object quilltests {
+import akka.Done
+import akka.stream.scaladsl.Sink
+import de.beikern.quilltests.contexts.QuillCtx
 
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+import scala.concurrent.Future
+
+import annotation.implicitNotFound
+
+@implicitNotFound("No member of type class SinkLike in scope for ${T}")
+trait SinkLike[T] {
+  def getSink(implicit quillCtx: QuillCtx): Sink[T, Future[Done]]
 }

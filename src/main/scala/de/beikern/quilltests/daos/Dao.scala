@@ -19,12 +19,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.beikern
+package de.beikern.quilltests.daos
 
-package object quilltests {
-
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+object Dao {
+  case class Foo(field1: String, field2: Int)
+  case class Bar(field1: String, field2: Int)
 }
