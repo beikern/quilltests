@@ -3,6 +3,10 @@ lazy val quilltests = project
   .enablePlugins(AutomateHeaderPlugin, GitVersioning)
 
 libraryDependencies ++= Vector(
+  Library.quill,
+  Library.akkaActor,
+  Library.akkaStream,
+  Library.logback,
   Library.scalaTest % "test"
 )
 

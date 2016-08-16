@@ -19,12 +19,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.beikern
+package de.beikern.quilltests.contexts
 
-package object quilltests {
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+import scala.concurrent.ExecutionContext
+
+trait AkkaContext {
+  implicit val system: ActorSystem
+  implicit lazy val ec: ExecutionContext = system.dispatcher
+  implicit lazy val materializer         = ActorMaterializer()
 }

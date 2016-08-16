@@ -19,12 +19,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.beikern
+package de.beikern.quilltests.schemas
 
-package object quilltests {
+import de.beikern.quilltests.daos.Dao.{ Bar, Foo }
+import io.getquill.context.Context
 
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+trait Schema {
+  this: Context[_, _] =>
+
+  val mappedFoo = quote {
+    query[Foo].schema(
+        _.entity("foo_table").columns(_.field1 -> "f1", _.field2 -> "f2")
+    )
+  }
+
+  val mappedBar = quote {
+    query[Bar].schema(
+        _.entity("bar_table")
+          .columns(_.field1 -> "wololo", _.field2 -> "oyoyoy")
+    )
+  }
 }

@@ -19,12 +19,35 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.beikern
+package de.beikern.quilltests.evidences
 
-package object quilltests {
+import akka.Done
+import akka.stream.scaladsl.Sink
+import de.beikern.quilltests.contexts.{ AkkaContext, CassandraContext, QuillCtx }
+import de.beikern.quilltests.daos.Dao.{ Bar, Foo }
+import de.beikern.quilltests.typeclasses.SinkLike
 
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+import scala.concurrent.Future
+
+trait SinkEvidences { self: AkkaContext with CassandraContext =>
+  implicit object FooSinkLike extends SinkLike[Foo] {
+    override def getSink(
+        implicit quillCtx: QuillCtx
+    ): Sink[Foo, Future[Done]] = {
+      import quillCtx._
+      Sink.foreach[Foo](elem => {
+        run(mappedFoo.insert)(elem)
+      })
+    }
+  }
+  implicit object BarSinkLike extends SinkLike[Bar] {
+    override def getSink(
+        implicit quillCtx: QuillCtx
+    ): Sink[Bar, Future[Done]] = {
+      import quillCtx._
+      Sink.foreach[Bar](elem => {
+        run(mappedBar.insert)(elem)
+      })
+    }
+  }
 }
