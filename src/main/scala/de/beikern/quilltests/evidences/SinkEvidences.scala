@@ -65,8 +65,9 @@ trait SinkEvidences { self: AkkaContext with CassandraContext =>
       import quillCtx._
 
       Sink.foreach[Foo](elem => {
-        println(s"queriesInFlightPerHost = $queriesInFlightPerHost")
-        printQueriesInFlight()
+//        Thread.sleep(2000)
+//        println(s"queriesInFlightPerHost = $queriesInFlightPerHost")
+//        printQueriesInFlight()
         quillCtx.run(mappedFoo.insert(lift(elem))).onFailure(errorLog)
       })
     }
@@ -77,8 +78,9 @@ trait SinkEvidences { self: AkkaContext with CassandraContext =>
     ): Sink[Bar, Future[Done]] = {
       import quillCtx._
       Sink.foreach[Bar](elem => {
-        println(s"queriesInFlightPerHost = $queriesInFlightPerHost")
-        printQueriesInFlight()
+//        Thread.sleep(2000)
+//        println(s"queriesInFlightPerHost = $queriesInFlightPerHost")
+//        printQueriesInFlight()
         run(mappedBar.insert(lift(elem))).onFailure(errorLog)
       })
     }

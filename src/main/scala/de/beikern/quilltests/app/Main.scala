@@ -29,6 +29,7 @@ import com.datastax.driver.core.{Cluster, HostDistance, PoolingOptions}
 import de.beikern.quilltests.contexts.{AkkaContext, CassandraContext, QuillCtx}
 import de.beikern.quilltests.daos.Dao.{Bar, Foo}
 import de.beikern.quilltests.evidences.SinkEvidences
+import de.beikern.quilltests.graphstages.CassandraBackpressure
 import de.beikern.quilltests.typeclasses.SinkLike
 
 import scala.concurrent.Future
@@ -46,7 +47,7 @@ object Main extends App with AkkaContextImpl with CassandraContextImpl with Sink
       )
   )
 
-  sourceFoo.to(getSink).run
+  sourceFoo.via(new CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
 
   val sourceBar = Source.fromIterator(
       () =>
@@ -57,7 +58,7 @@ object Main extends App with AkkaContextImpl with CassandraContextImpl with Sink
             )
       )
   )
-  sourceBar.to(getSink).run
+  sourceBar.via(new CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
 
 }
 
