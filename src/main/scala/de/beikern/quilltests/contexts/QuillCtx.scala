@@ -21,9 +21,13 @@
 
 package de.beikern.quilltests.contexts
 
+import com.datastax.driver.core.{Cluster, Session}
 import de.beikern.quilltests.schemas.Schema
 import io.getquill.{CassandraAsyncContext, SnakeCase}
 
-class QuillCtx(configPrefix: String)
-    extends CassandraAsyncContext[SnakeCase](configPrefix)
-    with Schema
+class QuillCtx(cluster: Cluster, keyspace: String, preparedStatementCacheSize: Long)
+    extends CassandraAsyncContext[SnakeCase](cluster, keyspace, preparedStatementCacheSize)
+    with Schema {
+  val cassandraSession: Session = session
+  val cassandraCluster: Cluster = cluster
+}

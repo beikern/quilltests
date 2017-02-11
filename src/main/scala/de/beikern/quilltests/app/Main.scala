@@ -21,9 +21,11 @@
 
 package de.beikern.quilltests.app
 
+import akka.Done
 import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Sink, Source}
-import akka.{Done, NotUsed}
+import com.datastax.driver.core.Cluster.Builder
+import com.datastax.driver.core.{Cluster, HostDistance, PoolingOptions}
 import de.beikern.quilltests.contexts.{AkkaContext, CassandraContext, QuillCtx}
 import de.beikern.quilltests.daos.Dao.{Bar, Foo}
 import de.beikern.quilltests.evidences.SinkEvidences
@@ -64,7 +66,22 @@ trait AkkaContextImpl extends AkkaContext {
 }
 
 trait CassandraContextImpl extends CassandraContext {
-  override implicit lazy val quillCtx = new QuillCtx("ctx")
+
+  val clusterBuilder: Builder = Cluster.builder()
+  clusterBuilder.addContactPoints("127.0.0.1")
+  clusterBuilder.withPoolingOptions(
+      new PoolingOptions()
+        .setMaxRequestsPerConnection(HostDistance.LOCAL, 1024)
+        .setMaxRequestsPerConnection(HostDistance.REMOTE, 256)
+        .setMaxQueueSize(1024)
+//        .setConnectionsPerHost(HostDistance.LOCAL, 4, 10)
+//        .setConnectionsPerHost(HostDistance.REMOTE, 2, 4)
+  )
+
+  val cluster: Cluster = clusterBuilder.build()
+
+  override implicit lazy val quillCtx = new QuillCtx(cluster, "quill_test", 1000)
+
 }
 
 trait GetSink { self: AkkaContext with CassandraContext =>

@@ -31,6 +31,30 @@ import scala.concurrent.Future
 
 trait SinkEvidences { self: AkkaContext with CassandraContext =>
 
+  def queriesInFlightPerHost: Int = {
+    import quillCtx._
+    import scala.collection.JavaConversions._
+
+    val iterable: Iterable[Int] = for {
+      host <- cassandraSession.getState.getConnectedHosts
+    } yield { cassandraSession.getState.getInFlightQueries(host) }
+
+    iterable.toList.sum
+  }
+
+  /**
+    * This method shows how many queries are in flight for each host.
+    * NOTE: The method only makes side effects!
+    */
+  def printQueriesInFlight(): Unit = {
+    import quillCtx._
+    import scala.collection.JavaConversions._
+
+    for {
+      host <- cassandraSession.getState.getConnectedHosts
+    } { println(s"queries in flight ${cassandraSession.getState.getInFlightQueries(host)} for the host $host") }
+  }
+
   val errorLog: PartialFunction[Throwable, Unit] = PartialFunction[Throwable, Unit](
       ex => println(s"There was an error persisting elements. Stacktrace: ${ex.getMessage}")
   )
@@ -39,7 +63,10 @@ trait SinkEvidences { self: AkkaContext with CassandraContext =>
         implicit quillCtx: QuillCtx
     ): Sink[Foo, Future[Done]] = {
       import quillCtx._
+
       Sink.foreach[Foo](elem => {
+        println(s"queriesInFlightPerHost = $queriesInFlightPerHost")
+        printQueriesInFlight()
         quillCtx.run(mappedFoo.insert(lift(elem))).onFailure(errorLog)
       })
     }
@@ -50,6 +77,8 @@ trait SinkEvidences { self: AkkaContext with CassandraContext =>
     ): Sink[Bar, Future[Done]] = {
       import quillCtx._
       Sink.foreach[Bar](elem => {
+        println(s"queriesInFlightPerHost = $queriesInFlightPerHost")
+        printQueriesInFlight()
         run(mappedBar.insert(lift(elem))).onFailure(errorLog)
       })
     }
