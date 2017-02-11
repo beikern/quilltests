@@ -35,4 +35,4 @@ CREATE TABLE quill_test.bar_table (
 
 then just sbt run.
 
-This implementation
+This implementation fails because high concurrency punches the Datastax java driver hard. There should be a configuration to avoid this behaviour.
