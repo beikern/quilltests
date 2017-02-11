@@ -22,7 +22,7 @@
 package de.beikern.quilltests.contexts
 
 import de.beikern.quilltests.schemas.Schema
-import io.getquill.{ CassandraAsyncContext, SnakeCase }
+import io.getquill.{CassandraAsyncContext, SnakeCase}
 
 class QuillCtx(configPrefix: String)
     extends CassandraAsyncContext[SnakeCase](configPrefix)

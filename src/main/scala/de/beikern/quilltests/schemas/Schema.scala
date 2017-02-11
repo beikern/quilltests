@@ -21,22 +21,25 @@
 
 package de.beikern.quilltests.schemas
 
-import de.beikern.quilltests.daos.Dao.{ Bar, Foo }
+import de.beikern.quilltests.daos.Dao.{Bar, Foo}
 import io.getquill.context.Context
 
 trait Schema {
   this: Context[_, _] =>
 
   val mappedFoo = quote {
-    query[Foo].schema(
-        _.entity("foo_table").columns(_.field1 -> "f1", _.field2 -> "f2")
+    querySchema[Foo](
+        "foo_table",
+        _.field1 -> "f1",
+        _.field2 -> "f2"
     )
   }
 
   val mappedBar = quote {
-    query[Bar].schema(
-        _.entity("bar_table")
-          .columns(_.field1 -> "wololo", _.field2 -> "oyoyoy")
+    querySchema[Bar](
+        "bar_table",
+        _.field1 -> "wololo",
+        _.field2 -> "oyoyoy"
     )
   }
 }

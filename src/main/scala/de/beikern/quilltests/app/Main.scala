@@ -22,29 +22,38 @@
 package de.beikern.quilltests.app
 
 import akka.actor.ActorSystem
-import akka.stream.scaladsl.{ Sink, Source }
-import akka.{ Done, NotUsed }
-import de.beikern.quilltests.contexts.{ AkkaContext, CassandraContext, QuillCtx }
-import de.beikern.quilltests.daos.Dao.{ Bar, Foo }
+import akka.stream.scaladsl.{Sink, Source}
+import akka.{Done, NotUsed}
+import de.beikern.quilltests.contexts.{AkkaContext, CassandraContext, QuillCtx}
+import de.beikern.quilltests.daos.Dao.{Bar, Foo}
 import de.beikern.quilltests.evidences.SinkEvidences
 import de.beikern.quilltests.typeclasses.SinkLike
 
 import scala.concurrent.Future
+import scala.util.Random
 
-object Main
-    extends App
-    with AkkaContextImpl
-    with CassandraContextImpl
-    with SinkEvidences
-    with GetSink {
+object Main extends App with AkkaContextImpl with CassandraContextImpl with SinkEvidences with GetSink {
 
-  val sourceFoo: Source[Foo, NotUsed] = Source.fromIterator(
-      () => List(Foo("today", 1), Foo("is", 2), Foo("the_day", 3)).toIterator
+  val sourceFoo = Source.fromIterator(
+      () =>
+        Iterator.continually(
+            Foo(
+                Random.nextString(10000),
+                Random.nextInt(Integer.MAX_VALUE)
+            )
+      )
   )
+
   sourceFoo.to(getSink).run
 
-  val sourceBar: Source[Bar, NotUsed] = Source.fromIterator(
-      () => List(Bar("today", 1), Bar("is", 2), Bar("the_day", 3)).toIterator
+  val sourceBar = Source.fromIterator(
+      () =>
+        Iterator.continually(
+            Bar(
+                Random.nextString(10000),
+                Random.nextInt(Integer.MAX_VALUE)
+            )
+      )
   )
   sourceBar.to(getSink).run
 

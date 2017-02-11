@@ -23,20 +23,24 @@ package de.beikern.quilltests.evidences
 
 import akka.Done
 import akka.stream.scaladsl.Sink
-import de.beikern.quilltests.contexts.{ AkkaContext, CassandraContext, QuillCtx }
-import de.beikern.quilltests.daos.Dao.{ Bar, Foo }
+import de.beikern.quilltests.contexts.{AkkaContext, CassandraContext, QuillCtx}
+import de.beikern.quilltests.daos.Dao.{Bar, Foo}
 import de.beikern.quilltests.typeclasses.SinkLike
 
 import scala.concurrent.Future
 
 trait SinkEvidences { self: AkkaContext with CassandraContext =>
+
+  val errorLog: PartialFunction[Throwable, Unit] = PartialFunction[Throwable, Unit](
+      ex => println(s"There was an error persisting elements. Stacktrace: ${ex.getMessage}")
+  )
   implicit object FooSinkLike extends SinkLike[Foo] {
     override def getSink(
         implicit quillCtx: QuillCtx
     ): Sink[Foo, Future[Done]] = {
       import quillCtx._
       Sink.foreach[Foo](elem => {
-        run(mappedFoo.insert)(elem)
+        quillCtx.run(mappedFoo.insert(lift(elem))).onFailure(errorLog)
       })
     }
   }
@@ -46,7 +50,7 @@ trait SinkEvidences { self: AkkaContext with CassandraContext =>
     ): Sink[Bar, Future[Done]] = {
       import quillCtx._
       Sink.foreach[Bar](elem => {
-        run(mappedBar.insert)(elem)
+        run(mappedBar.insert(lift(elem))).onFailure(errorLog)
       })
     }
   }
