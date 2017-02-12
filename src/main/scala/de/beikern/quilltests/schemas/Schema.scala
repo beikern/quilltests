@@ -24,22 +24,21 @@ package de.beikern.quilltests.schemas
 import de.beikern.quilltests.daos.Dao.{Bar, Foo}
 import io.getquill.context.Context
 
-trait Schema {
-  this: Context[_, _] =>
+trait Schema { this: Context[_, _] =>
 
   val mappedFoo = quote {
     querySchema[Foo](
-        "foo_table",
-        _.field1 -> "f1",
-        _.field2 -> "f2"
+      "foo_table",
+      _.field1 -> "f1",
+      _.field2 -> "f2"
     )
   }
 
   val mappedBar = quote {
     querySchema[Bar](
-        "bar_table",
-        _.field1 -> "wololo",
-        _.field2 -> "oyoyoy"
+      "bar_table",
+      _.field1 -> "wololo",
+      _.field2 -> "oyoyoy"
     )
   }
 }

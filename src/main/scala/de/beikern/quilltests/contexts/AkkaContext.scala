@@ -29,5 +29,5 @@ import scala.concurrent.ExecutionContext
 trait AkkaContext {
   implicit val system: ActorSystem
   implicit lazy val ec: ExecutionContext = system.dispatcher
-  implicit lazy val materializer         = ActorMaterializer()
+  implicit lazy val materializer = ActorMaterializer()
 }

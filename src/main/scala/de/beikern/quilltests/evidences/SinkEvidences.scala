@@ -43,9 +43,9 @@ trait SinkEvidences { self: AkkaContext with CassandraContext =>
   }
 
   /**
-    * This method shows how many queries are in flight for each host.
-    * NOTE: The method only makes side effects!
-    */
+   * This method shows how many queries are in flight for each host.
+   * NOTE: The method only makes side effects!
+   */
   def printQueriesInFlight(): Unit = {
     import quillCtx._
     import scala.collection.JavaConversions._
@@ -56,7 +56,7 @@ trait SinkEvidences { self: AkkaContext with CassandraContext =>
   }
 
   val errorLog: PartialFunction[Throwable, Unit] = PartialFunction[Throwable, Unit](
-      ex => println(s"There was an error persisting elements. Stacktrace: ${ex.getMessage}")
+    ex => println(s"There was an error persisting elements. Stacktrace: ${ex.getMessage}")
   )
   implicit object FooSinkLike extends SinkLike[Foo] {
     override def getSink(

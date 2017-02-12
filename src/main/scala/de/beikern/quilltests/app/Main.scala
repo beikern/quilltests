@@ -38,25 +38,25 @@ import scala.util.Random
 object Main extends App with AkkaContextImpl with CassandraContextImpl with SinkEvidences with GetSink {
 
   val sourceFoo = Source.fromIterator(
-      () =>
-        Iterator.continually(
-            Foo(
-                Random.nextString(10000),
-                Random.nextInt(Integer.MAX_VALUE)
-            )
-      )
+    () =>
+      Iterator.continually(
+        Foo(
+          Random.nextString(10000),
+          Random.nextInt(Integer.MAX_VALUE)
+        )
+    )
   )
 
   sourceFoo.via(new CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
 
   val sourceBar = Source.fromIterator(
-      () =>
-        Iterator.continually(
-            Bar(
-                Random.nextString(10000),
-                Random.nextInt(Integer.MAX_VALUE)
-            )
-      )
+    () =>
+      Iterator.continually(
+        Bar(
+          Random.nextString(10000),
+          Random.nextInt(Integer.MAX_VALUE)
+        )
+    )
   )
   sourceBar.via(new CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
 
@@ -71,10 +71,10 @@ trait CassandraContextImpl extends CassandraContext {
   val clusterBuilder: Builder = Cluster.builder()
   clusterBuilder.addContactPoints("127.0.0.1")
   clusterBuilder.withPoolingOptions(
-      new PoolingOptions()
-        .setMaxRequestsPerConnection(HostDistance.LOCAL, 1024)
-        .setMaxRequestsPerConnection(HostDistance.REMOTE, 256)
-        .setMaxQueueSize(1024)
+    new PoolingOptions()
+      .setMaxRequestsPerConnection(HostDistance.LOCAL, 1024)
+      .setMaxRequestsPerConnection(HostDistance.REMOTE, 256)
+      .setMaxQueueSize(1024)
 //        .setConnectionsPerHost(HostDistance.LOCAL, 4, 10)
 //        .setConnectionsPerHost(HostDistance.REMOTE, 2, 4)
   )
@@ -87,9 +87,8 @@ trait CassandraContextImpl extends CassandraContext {
 
 trait GetSink { self: AkkaContext with CassandraContext =>
 
-  def getSink[T](implicit ev: SinkLike[T]): Sink[T, Future[Done]] = {
+  def getSink[T](implicit ev: SinkLike[T]): Sink[T, Future[Done]] =
     ev.getSink
-  }
 }
 
 // Trying to improve type classes here, no luck for now :(
