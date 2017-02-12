@@ -35,4 +35,4 @@ CREATE TABLE quill_test.bar_table (
 
 then just sbt run.
 
-This implementation fails because high concurrency punches the Datastax java driver hard. There should be a configuration to avoid this behaviour.
+This implementation fails because high concurrency / througput punches the Datastax java driver hard. It implements a simple backpressure mechanism to avoid overflowing the maxQueueSize defined in (_PoolingOptions_)[http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/PoolingOptions.html] to be used in the (_Cluster_)[http://docs.datastax.com/en/drivers/java/3.1/index.html?overview-summary.html]
