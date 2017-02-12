@@ -35,4 +35,4 @@ CREATE TABLE quill_test.bar_table (
 
 then just sbt run.
 
-This implementation tries to solve errors because of high concurrency / througput using _backpressure_ to avoid overflows in pooling queue size defined in (_PoolingOptions_)[http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/PoolingOptions.html] by _maxQueueSize_. It uses a custom (_TimedGraphStage_)[http://doc.akka.io/docs/akka/2.4/scala/stream/stream-customize.html#Using_timers]
+This implementation tries to solve errors because of high concurrency / throughput using _backpressure_ to avoid overflows in pooling queue size defined in [PoolingOptions](http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/PoolingOptions.html) by _maxQueueSize_. It uses a custom [TimedGraphStage](http://doc.akka.io/docs/akka/2.4/scala/stream/stream-customize.html#Using_timers)
