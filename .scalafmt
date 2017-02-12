@@ -1,6 +1,6 @@
 style = defaultWithAlign
 
-align.tokens               = [off]
+align.tokens               = [on]
 danglingParentheses        = true
 docstrings                 = JavaDoc
 indentOperator             = spray

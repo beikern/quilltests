@@ -25,6 +25,9 @@ import akka.stream.stage._
 import akka.stream.{Attributes, FlowShape, Inlet, Outlet}
 import com.datastax.driver.core.Session
 
+object CassandraBackpressure {
+  def apply[A](session: Session): CassandraBackpressure[A] = new CassandraBackpressure[A](session)
+}
 class CassandraBackpressure[A](session: Session) extends GraphStage[FlowShape[A, A]] {
 
   private def queriesInFlightPerHost(session: Session): Int = {

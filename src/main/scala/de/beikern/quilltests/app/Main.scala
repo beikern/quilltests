@@ -47,7 +47,7 @@ object Main extends App with AkkaContextImpl with CassandraContextImpl with Sink
     )
   )
 
-  sourceFoo.via(new CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
+  sourceFoo.via(CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
 
   val sourceBar = Source.fromIterator(
     () =>
@@ -58,7 +58,7 @@ object Main extends App with AkkaContextImpl with CassandraContextImpl with Sink
         )
     )
   )
-  sourceBar.via(new CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
+  sourceBar.via(CassandraBackpressure(quillCtx.cassandraSession)).to(getSink).run
 
 }
 
