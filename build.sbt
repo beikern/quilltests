@@ -1,6 +1,4 @@
-lazy val quilltests = project
-  .in(file("."))
-  .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+lazy val quilltests = project.in(file(".")).enablePlugins(AutomateHeaderPlugin, GitVersioning)
 
 libraryDependencies ++= Vector(
   Library.quill,

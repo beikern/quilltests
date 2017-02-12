@@ -36,23 +36,24 @@ class CassandraBackpressure[A](session: Session) extends GraphStage[FlowShape[A,
     iterable.toList.sum
   }
 
-  val in  = Inlet[A]("CassandraBackpressure.in")
-  val out = Outlet[A]("CassandraBackpressure.out")
+  val in: Inlet[A] = Inlet[A]("CassandraBackpressure.in")
+  val out: Outlet[A] = Outlet[A]("CassandraBackpressure.out")
 
   override val shape: FlowShape[A, A] = FlowShape.of(in, out)
 
-  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = {
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) {
       // All mutable state must be inside the graphStageLogic
       var open = true
 
-      setHandler(in, new InHandler {
-        override def onPush: Unit = {
+      setHandler(in,
+        new InHandler {
+        override def onPush: Unit =
           push(out, grab(in))
-        }
       })
 
-      setHandler(out, new OutHandler {
+      setHandler(out,
+        new OutHandler {
         override def onPull(): Unit = {
           import scala.concurrent.duration._
 
@@ -70,8 +71,5 @@ class CassandraBackpressure[A](session: Session) extends GraphStage[FlowShape[A,
         open = true
         pull(in)
       }
-
     }
-  }
-
 }
